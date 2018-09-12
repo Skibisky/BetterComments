@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BetterComments.CommentsTagging
 {
@@ -17,7 +18,8 @@ namespace BetterComments.CommentsTagging
         Important,
         Question,
         Crossed,
-        Task
+        Task,
+        Trace
     }
 
     internal class CommentTagger : ITagger<ClassificationTag>, IDisposable
@@ -39,6 +41,30 @@ namespace BetterComments.CommentsTagging
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
 #pragma warning restore 0067
+
+        static string[] logFuncs = new string[] {
+            "trace",
+            "log",
+            "debug",
+            "error",
+            "warn",
+            "info",
+            "fatal",
+            "write",
+            "writeline"
+        };
+
+        static Regex theRegex = null;
+        static Regex TheRegex {
+            get {
+                if (theRegex == null)
+                {
+                    var str = Regex.Escape(".") + "(?:(?:" + string.Join(")|(?:", logFuncs) + "))" + Regex.Escape("(");
+                    theRegex = new Regex(str, RegexOptions.IgnoreCase);
+                }
+                return theRegex;
+            }
+        }
 
         public IEnumerable<ITagSpan<ClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
@@ -68,6 +94,13 @@ namespace BetterComments.CommentsTagging
                 }
             }
 
+            foreach (var span in spans)
+            {
+                if (TheRegex.IsMatch(span.GetText())) {
+                    results.Add(new TagSpan<ClassificationTag>(span, CreateTag(CommentType.Trace)));
+                }
+            }
+
             return results;
         }
 
@@ -91,6 +124,9 @@ namespace BetterComments.CommentsTagging
 
                 case CommentType.Task:
                     return new ClassificationTag(classRegistry.GetClassificationType(CommentNames.TASK_COMMENT));
+
+                case CommentType.Trace:
+                    return new ClassificationTag(classRegistry.GetClassificationType(CommentNames.TRACE_COMMENT));
 
                 default:
                     return new ClassificationTag(classRegistry.GetClassificationType("comment"));

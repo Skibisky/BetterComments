@@ -6,6 +6,7 @@ namespace BetterComments.CommentsTagging
 {
     internal class CSharpCommentParser : CommentParser
     {
+        
         public override bool IsValidComment(SnapshotSpan span)
         {
             var txt = span.GetText();

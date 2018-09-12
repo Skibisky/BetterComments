@@ -8,6 +8,7 @@ namespace BetterComments.CommentsClassification
         public const string QUESTION_COMMENT = "Comment - Question";
         public const string CROSSED_COMMENT = "Comment - Crossed";
         public const string TASK_COMMENT = "Comment - Task";
+        public const string TRACE_COMMENT = "Code - Trace";
     }
 
     internal static class CommentColors

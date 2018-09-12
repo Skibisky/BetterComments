@@ -8,6 +8,10 @@ namespace BetterComments
         {
             return tag.ClassificationType.Classification.ContainsCaseIgnored("comment");
         }
+        public static bool IsCode(this IClassificationTag tag)
+        {
+            return tag.ClassificationType.Classification.ContainsCaseIgnored("code");
+        }
 
         public static bool IsXmlDoc(this IClassificationTag tag)
         {

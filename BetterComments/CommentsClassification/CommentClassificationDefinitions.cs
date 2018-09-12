@@ -28,6 +28,11 @@ namespace BetterComments.CommentsClassification
         [BaseDefinition("Comment")]
         internal static ClassificationTypeDefinition TaskCommentDefinition;
 
+        [Export]
+        [Name(CommentNames.TRACE_COMMENT)]
+        [BaseDefinition("Plain Text")]
+        internal static ClassificationTypeDefinition TraceCommentDefinition;
+
 #pragma warning restore 0649
     }
 }
